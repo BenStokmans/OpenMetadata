@@ -138,6 +138,8 @@ export interface DatabaseConnection {
  *
  * Doris Database Connection Config
  *
+ * DuckLake is an open Lakehouse format that is built on SQL and Parquet
+ *
  * StarRocks Database Connection Config
  *
  * UnityCatalog Connection Config
@@ -346,7 +348,11 @@ export interface Connection {
      * multi-regions are not yet in GA.
      */
     usageLocation?: string;
-    awsConfig?:     AWSCredentials;
+    /**
+     * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+     * as s3://, r2://, gcs://, or gs://.
+     */
+    awsConfig?: AWSCredentials;
     /**
      * Catalog ID for Athena. For S3 Tables, use the format 's3tablescatalog/<bucket-name>'. For
      * cross-account Glue catalogs, use the AWS account ID. If not provided, defaults to the
@@ -356,6 +362,9 @@ export interface Connection {
     /**
      * Optional name to give to the database in OpenMetadata. If left blank, we will use default
      * as the database name.
+     *
+     * Optional name to give to the database in OpenMetadata. If left blank, the attached
+     * catalog name is used.
      *
      * Optional name to give to the database in OpenMetadata. If left blank, we will use 'epic'
      * as the database name.
@@ -623,6 +632,9 @@ export interface Connection {
      * databaseSchema of the data source. This is optional parameter, if you would like to
      * restrict the metadata reading to a single databaseSchema. When left blank, OpenMetadata
      * Ingestion attempts to scan all the databaseSchema.
+     *
+     * Database Schema of the data source. This is optional parameter, if you would like to
+     * restrict the metadata reading to a single schema.
      *
      * Optional name to give to the schema in OpenMetadata. If left blank, we will use default
      * as the schema name
@@ -1010,6 +1022,31 @@ export interface Connection {
      */
     hostport?: string;
     /**
+     * Catalog name used to attach DuckLake in DuckDB.
+     */
+    catalogName?: string;
+    /**
+     * Create a new DuckLake if the configured metadata catalog does not exist.
+     */
+    createIfNotExists?: boolean;
+    /**
+     * Optional DuckLake data storage location. Examples: s3://bucket/path/ or /path/to/files/.
+     */
+    dataPath?: string;
+    /**
+     * DuckLake metadata catalog path or connection string. Examples: metadata.ducklake,
+     * postgres:dbname=postgres, or a DuckDB secret name.
+     */
+    metadataPath?: string;
+    /**
+     * Override the data path stored in DuckLake metadata for this connection.
+     */
+    overrideDataPath?: boolean;
+    /**
+     * Attach DuckLake in read-only mode.
+     */
+    readOnly?: boolean;
+    /**
      * Enable dataflow for ingestion
      */
     dataflows?: boolean;
@@ -1273,6 +1310,9 @@ export interface AuthenticationType {
 
 /**
  * AWS credentials configs.
+ *
+ * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+ * as s3://, r2://, gcs://, or gs://.
  */
 export interface AWSCredentials {
     /**
@@ -1652,6 +1692,9 @@ export interface ConnectionClass {
  * GCP credentials to use. If not provided, Application Default Credentials will be used.
  *
  * AWS credentials configs.
+ *
+ * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+ * as s3://, r2://, gcs://, or gs://.
  */
 export interface Credentials {
     /**
@@ -2052,6 +2095,9 @@ export interface DataStorageConfig {
 
 /**
  * AWS credentials configs.
+ *
+ * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+ * as s3://, r2://, gcs://, or gs://.
  */
 export interface AwsCredentials {
     /**
@@ -2209,6 +2255,7 @@ export enum ConfigScheme {
     Db2IBMDB = "db2+ibm_db",
     Doris = "doris",
     Druid = "druid",
+    Duckdb = "duckdb",
     ExaWebsocket = "exa+websocket",
     Hana = "hana",
     Hive = "hive",
@@ -2285,6 +2332,7 @@ export enum ConfigType {
     Doris = "Doris",
     Dremio = "Dremio",
     Druid = "Druid",
+    Ducklake = "Ducklake",
     DynamoDB = "DynamoDB",
     Epic = "Epic",
     Exasol = "Exasol",
@@ -2417,6 +2465,7 @@ export enum DatabaseServiceType {
     Doris = "Doris",
     Dremio = "Dremio",
     Druid = "Druid",
+    Ducklake = "Ducklake",
     DynamoDB = "DynamoDB",
     Epic = "Epic",
     Exasol = "Exasol",

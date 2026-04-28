@@ -49,6 +49,8 @@ VERSIONS = {
     "azure-identity": "azure-identity~=1.12",
     "databricks-sdk": "databricks-sdk~=0.20.0",
     "databricks-sql-connector": "databricks-sql-connector>=2.0",
+    "duckdb": "duckdb>=1.3.0",
+    "duckdb-engine": "duckdb-engine>=0.15.0",
     "trino": "trino[sqlalchemy]",
     "spacy": "spacy<3.8",
     "looker-sdk": "looker-sdk>=22.20.0,!=24.18.0",
@@ -270,6 +272,7 @@ plugins: Dict[str, Set[str]] = {  # noqa: UP006
     # pydoris-custom declares sqlalchemy<2 but works at runtime with SA 2.0.
     # Pre-installed with --no-deps in Dockerfiles.
     "doris": set(),
+    "ducklake": {VERSIONS["duckdb"], VERSIONS["duckdb-engine"]},
     "starrocks": {VERSIONS["pymysql"]},
     "druid": {"pydruid>=0.6.5"},
     "dynamodb": {VERSIONS["boto3"]},

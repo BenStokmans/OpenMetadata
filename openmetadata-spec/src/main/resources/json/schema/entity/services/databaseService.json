@@ -56,6 +56,7 @@
         "Couchbase",
         "Greenplum",
         "Doris",
+        "Ducklake",
         "StarRocks",
         "UnityCatalog",
         "SAS",
@@ -196,6 +197,9 @@
         },
         {
           "name": "Doris"
+        },
+        {
+          "name": "Ducklake"
         },
         {
           "name": "StarRocks"
@@ -373,6 +377,9 @@
             },
             {
               "$ref": "./connections/database/dorisConnection.json"
+            },
+            {
+              "$ref": "./connections/database/ducklakeConnection.json"
             },
             {
               "$ref": "./connections/database/starrocksConnection.json"

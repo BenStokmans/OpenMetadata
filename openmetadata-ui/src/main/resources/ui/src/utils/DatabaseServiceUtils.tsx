@@ -38,6 +38,7 @@ import db2Connection from '../jsons/connectionSchemas/connections/database/db2Co
 import deltaLakeConnection from '../jsons/connectionSchemas/connections/database/deltaLakeConnection.json';
 import domoDatabaseConnection from '../jsons/connectionSchemas/connections/database/domoDatabaseConnection.json';
 import dorisConnection from '../jsons/connectionSchemas/connections/database/dorisConnection.json';
+import ducklakeConnection from '../jsons/connectionSchemas/connections/database/ducklakeConnection.json';
 import druidConnection from '../jsons/connectionSchemas/connections/database/druidConnection.json';
 import dynamoDBConnection from '../jsons/connectionSchemas/connections/database/dynamoDBConnection.json';
 import exasolConnection from '../jsons/connectionSchemas/connections/database/exasolConnection.json';
@@ -130,6 +131,11 @@ export const getDatabaseConfig = (type: DatabaseServiceType) => {
     }
     case DatabaseServiceType.Doris: {
       schema = dorisConnection;
+
+      break;
+    }
+    case DatabaseServiceType.Ducklake: {
+      schema = ducklakeConnection;
 
       break;
     }
