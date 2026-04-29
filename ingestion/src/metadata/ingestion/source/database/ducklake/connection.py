@@ -39,11 +39,11 @@ from metadata.utils.constants import THREE_MIN
 
 
 def _quote_identifier(identifier: str) -> str:
-    return f'"{identifier.replace(chr(34), chr(34) * 2)}"'
+    return '"' + identifier.replace('"', '""') + '"'
 
 
 def _quote_literal(value: str) -> str:
-    return f"'{value.replace(chr(39), chr(39) * 2)}'"
+    return "'" + value.replace("'", "''") + "'"
 
 
 def _bool_literal(value: bool) -> str:
@@ -51,10 +51,7 @@ def _bool_literal(value: bool) -> str:
 
 
 def _has_s3_path(connection: DucklakeConnectionConfig) -> bool:
-    paths = [
-        getattr(connection, "dataPath", None),
-        getattr(connection, "metadataPath", None),
-    ]
+    paths = [connection.dataPath, connection.metadataPath]
     return any(path and path.lower().startswith(("s3://", "r2://", "gcs://", "gs://")) for path in paths)
 
 
@@ -113,7 +110,7 @@ class DucklakeConnection(BaseConnection[DucklakeConnectionConfig, Engine]):
         if connection.readOnly:
             options.append("READ_ONLY")
 
-        options_sql = f" ({', '.join(options)})" if options else ""
+        options_sql = f" ({', '.join(options)})"
 
         return (
             f"ATTACH {_quote_literal(f'ducklake:{connection.metadataPath}')} "
@@ -126,12 +123,12 @@ class DucklakeConnection(BaseConnection[DucklakeConnectionConfig, Engine]):
             return None
 
         options = ["TYPE s3"]
-        access_key = getattr(aws_config, "awsAccessKeyId", None)
-        secret_key = getattr(aws_config, "awsSecretAccessKey", None)
-        session_token = getattr(aws_config, "awsSessionToken", None)
-        region = getattr(aws_config, "awsRegion", None)
-        endpoint = getattr(aws_config, "endPointURL", None)
-        profile_name = getattr(aws_config, "profileName", None)
+        access_key = aws_config.awsAccessKeyId
+        secret_key = aws_config.awsSecretAccessKey
+        session_token = aws_config.awsSessionToken
+        region = aws_config.awsRegion
+        endpoint = aws_config.endPointURL
+        profile_name = aws_config.profileName
 
         if access_key and secret_key:
             options.append("PROVIDER config")
