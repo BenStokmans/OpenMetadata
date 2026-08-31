@@ -18,11 +18,15 @@ inputs:
     default: "false"
   release_version:
     description: OpenMetadata Release Version
+  registry:
+    description: Container registry hostname
+    required: true
+    default: docker.io
   dockerhub_username:
-    description: Dockerhub Username
+    description: Container registry username
     required: true
   dockerhub_token:
-    description: Dockerhub Token
+    description: Container registry token
     required: true
 
 outputs:
@@ -39,9 +43,10 @@ runs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v4
 
-    - name: Login to DockerHub
+    - name: Login to container registry
       uses: docker/login-action@v4
       with:
+        registry: ${{ inputs.registry }}
         username: ${{ inputs.dockerhub_username }}
         password: ${{ inputs.dockerhub_token }}
 
@@ -71,5 +76,5 @@ runs:
           ${{ inputs.image }}
         sep-tags: ','
         tags: |
-          type=raw,value=${{ inputs.release_version }},enable=${{ inputs.is_ingestion == 'true' }}
+          type=raw,value=${{ inputs.release_version }},enable=${{ inputs.is_ingestion == 'true' && inputs.release_version != '' }}
           type=raw,${{ inputs.tag }}

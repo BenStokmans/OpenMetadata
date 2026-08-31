@@ -105,6 +105,10 @@ COPY --chown=airflow:0 --chmod=775 ingestion/ingestion_dependency.sh /opt/airflo
 COPY --chown=airflow:0 ingestion/examples/sample_data /home/airflow/ingestion/examples/sample_data
 # Required for Airflow DAGs of Sample Data
 COPY --chown=airflow:0 ingestion/examples/airflow/dags /opt/airflow/dags
+# Install the fork's generated ingestion framework and Airflow API plugin directly
+# from this checkout so connector changes do not depend on publishing to PyPI.
+COPY --chown=airflow:0 ingestion /opt/openmetadata/ingestion
+COPY --chown=airflow:0 openmetadata-airflow-apis /opt/openmetadata/openmetadata-airflow-apis
 
 # Refresh the interpreter-level pip before dropping privileges. The per-user
 # pip upgrade below only reaches ~/.local, leaving the base image's
@@ -127,13 +131,13 @@ ENV PIP_NO_CACHE_DIR=1
 ENV PIP_QUIET=1
 ARG RI_VERSION="2.0.0.0.dev0"
 RUN pip install --upgrade "pip>=26.2,<27" "setuptools>=83"
-RUN pip install "openmetadata-managed-apis~=${RI_VERSION}" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.3.1/constraints-3.12.txt"
-RUN pip install "openmetadata-ingestion[${INGESTION_DEPENDENCY}]~=${RI_VERSION}"
+RUN pip install /opt/openmetadata/openmetadata-airflow-apis --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.3.1/constraints-3.12.txt"
+RUN pip install "/opt/openmetadata/ingestion[${INGESTION_DEPENDENCY}]"
 
 
 # Temporary workaround for https://github.com/open-metadata/OpenMetadata/issues/9593
 RUN [ $(uname -m) = "x86_64" ] \
-  && pip install "openmetadata-ingestion[db2]~=${RI_VERSION}" \
+  && pip install "/opt/openmetadata/ingestion[db2]" \
   || echo "DB2 not supported on ARM architectures."
 
 # Ship py-spy so a hung worker can be sampled in place

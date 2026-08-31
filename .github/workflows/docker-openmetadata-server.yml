@@ -19,6 +19,11 @@ on:
       push_latest_tag_to_release:
         description: "Do you want to update docker image latest tag as well ?"
         type: boolean
+
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   maven-build:
     runs-on: ubuntu-latest
@@ -64,13 +69,24 @@ jobs:
         with:
           name: openmetadata-binary
 
-      - name: Upload app to release
+      - name: Create release and upload app
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ inputs.DOCKER_RELEASE_TAG }}
-        run: gh release upload "${RELEASE_TAG}-release" "openmetadata-${RELEASE_TAG}.tar.gz" --repo "${GITHUB_REPOSITORY}"
+        run: |
+          if ! gh release view "${RELEASE_TAG}-release" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            gh release create "${RELEASE_TAG}-release" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --target "${GITHUB_SHA}" \
+              --title "OpenMetadata ${RELEASE_TAG}" \
+              --notes "Fork release ${RELEASE_TAG}"
+          fi
+          gh release upload "${RELEASE_TAG}-release" \
+            "openmetadata-${RELEASE_TAG}.tar.gz" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber
 
-  push_to_docker_hub:
+  push_to_registry:
     runs-on: ubuntu-latest
     if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     needs: [ release-project-event-workflow_dispatch ]
@@ -87,11 +103,12 @@ jobs:
         id: prepare
         uses: ./.github/actions/prepare-for-docker-build-and-push
         with:
-          image: openmetadata/server
+          image: ghcr.io/benstokmans/openmetadata-server
           tag: ${{ inputs.docker_release_tag }}
           push_latest: ${{ inputs.push_latest_tag_to_release }}
-          dockerhub_username: ${{ secrets.DOCKERHUB_OPENMETADATA_USERNAME }}
-          dockerhub_token: ${{ secrets.DOCKERHUB_OPENMETADATA_TOKEN }}
+          registry: ghcr.io
+          dockerhub_username: ${{ github.actor }}
+          dockerhub_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push if event is workflow_dispatch and input is checked
         uses: docker/build-push-action@v7
@@ -106,3 +123,5 @@ jobs:
           build-args: |
             BUILD_DATE=${{ steps.build-args.outputs.BUILD_DATE }}
             COMMIT_ID=${{ github.sha }}
+            RI_VERSION=${{ inputs.docker_release_tag }}
+            RELEASE_REPOSITORY=${{ github.repository }}

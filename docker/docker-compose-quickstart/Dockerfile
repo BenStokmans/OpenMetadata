@@ -12,7 +12,8 @@
 # Build stage
 FROM alpine:3 AS build
 ARG RI_VERSION="2.0.0-SNAPSHOT"
-ENV RELEASE_URL="https://github.com/open-metadata/OpenMetadata/releases/download/${RI_VERSION}-release/openmetadata-${RI_VERSION}.tar.gz"
+ARG RELEASE_REPOSITORY="BenStokmans/OpenMetadata"
+ENV RELEASE_URL="https://github.com/${RELEASE_REPOSITORY}/releases/download/${RI_VERSION}-release/openmetadata-${RI_VERSION}.tar.gz"
 
 RUN mkdir -p /opt/openmetadata && \
     wget ${RELEASE_URL} && \
@@ -30,7 +31,7 @@ LABEL org.open-metadata.vendor="OpenMetadata"
 LABEL org.open-metadata.release-version="$RI_VERSION"
 LABEL org.open-metadata.description="OpenMetadata is an open source platform for metadata management and discovery."
 LABEL org.open-metadata.url="https://open-metadata.org/"
-LABEL org.open-metadata.vcs-url="https://github.com/open-metadata/OpenMetadata"
+LABEL org.open-metadata.vcs-url="https://github.com/BenStokmans/OpenMetadata"
 LABEL org.open-metadata.build-date=$BUILD_DATE
 LABEL org.open-metadata.commit-id=$COMMIT_ID
 
