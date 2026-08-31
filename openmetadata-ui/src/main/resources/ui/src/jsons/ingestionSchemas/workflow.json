@@ -13570,6 +13570,128 @@
                     },
                     {
                       "$schema": "http://json-schema.org/draft-07/schema#",
+                      "title": "DucklakeConnection",
+                      "description": "DuckLake is an open Lakehouse format that is built on SQL and Parquet",
+                      "type": "object",
+                      "javaType": "org.openmetadata.schema.services.connections.database.DucklakeConnection",
+                      "definitions": {
+                        "ducklakeType": {
+                          "description": "Service type.",
+                          "type": "string",
+                          "enum": [
+                            "Ducklake"
+                          ],
+                          "default": "Ducklake"
+                        },
+                        "ducklakeScheme": {
+                          "description": "SQLAlchemy driver scheme options.",
+                          "type": "string",
+                          "enum": [
+                            "duckdb"
+                          ],
+                          "default": "duckdb"
+                        }
+                      },
+                      "properties": {
+                        "type": {
+                          "title": "Service Type",
+                          "description": "Service Type",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/39/definitions/ducklakeType",
+                          "default": "Ducklake"
+                        },
+                        "scheme": {
+                          "title": "Connection Scheme",
+                          "description": "SQLAlchemy driver scheme options.",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/39/definitions/ducklakeScheme",
+                          "default": "duckdb"
+                        },
+                        "metadataPath": {
+                          "title": "Metadata Path",
+                          "description": "DuckLake metadata catalog path or connection string. Examples: metadata.ducklake, postgres:dbname=postgres, or a DuckDB secret name.",
+                          "type": "string"
+                        },
+                        "dataPath": {
+                          "title": "Data Path",
+                          "description": "Optional DuckLake data storage location. Examples: s3://bucket/path/ or /path/to/files/.",
+                          "type": "string"
+                        },
+                        "catalogName": {
+                          "title": "Catalog Name",
+                          "description": "Catalog name used to attach DuckLake in DuckDB.",
+                          "type": "string",
+                          "default": "ducklake"
+                        },
+                        "databaseName": {
+                          "title": "Database Name",
+                          "description": "Optional name to give to the database in OpenMetadata. If left blank, the attached catalog name is used.",
+                          "type": "string"
+                        },
+                        "databaseSchema": {
+                          "title": "Database Schema",
+                          "description": "Database Schema of the data source. This is optional parameter, if you would like to restrict the metadata reading to a single schema.",
+                          "type": "string"
+                        },
+                        "readOnly": {
+                          "title": "Read Only",
+                          "description": "Attach DuckLake in read-only mode.",
+                          "type": "boolean",
+                          "default": true
+                        },
+                        "createIfNotExists": {
+                          "title": "Create If Not Exists",
+                          "description": "Create a new DuckLake if the configured metadata catalog does not exist.",
+                          "type": "boolean",
+                          "default": false
+                        },
+                        "overrideDataPath": {
+                          "title": "Override Data Path",
+                          "description": "Override the data path stored in DuckLake metadata for this connection.",
+                          "type": "boolean",
+                          "default": false
+                        },
+                        "awsConfig": {
+                          "title": "AWS Credentials Configuration",
+                          "description": "Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such as s3://, r2://, gcs://, or gs://.",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/8/properties/config/oneOf/1/properties/authType/oneOf/1"
+                        },
+                        "connectionOptions": {
+                          "title": "Connection Options",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/4/properties/config/oneOf/3/properties/connectionOptions"
+                        },
+                        "connectionArguments": {
+                          "title": "Connection Arguments",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/4/properties/config/oneOf/3/properties/connectionArguments"
+                        },
+                        "schemaFilterPattern": {
+                          "title": "Default Schema Filter Pattern",
+                          "description": "Regex to only include/exclude schemas that matches the pattern.",
+                          "$ref": "#/definitions/workflowConfig/properties/openMetadataServerConfig/properties/tableFilterPattern"
+                        },
+                        "tableFilterPattern": {
+                          "title": "Default Table Filter Pattern",
+                          "description": "Regex to only include/exclude tables that matches the pattern.",
+                          "$ref": "#/definitions/workflowConfig/properties/openMetadataServerConfig/properties/tableFilterPattern"
+                        },
+                        "databaseFilterPattern": {
+                          "title": "Default Database Filter Pattern",
+                          "description": "Regex to only include/exclude databases that matches the pattern.",
+                          "$ref": "#/definitions/workflowConfig/properties/openMetadataServerConfig/properties/tableFilterPattern"
+                        },
+                        "supportsMetadataExtraction": {
+                          "title": "Supports Metadata Extraction",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/4/properties/config/oneOf/0/properties/supportsMetadataExtraction"
+                        },
+                        "supportsDBTExtraction": {
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/0/properties/supportsDBTExtraction"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "metadataPath"
+                      ]
+                    },
+                    {
+                      "$schema": "http://json-schema.org/draft-07/schema#",
                       "title": "StarRocksConnection",
                       "description": "StarRocks Database Connection Config",
                       "type": "object",
@@ -13596,13 +13718,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/39/definitions/starrocksType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/40/definitions/starrocksType",
                           "default": "StarRocks"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/39/definitions/starrocksScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/40/definitions/starrocksScheme",
                           "default": "mysql+pymysql"
                         },
                         "username": {
@@ -13719,13 +13841,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/40/definitions/databricksType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/41/definitions/databricksType",
                           "default": "UnityCatalog"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/40/definitions/databricksScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/41/definitions/databricksScheme",
                           "default": "databricks"
                         },
                         "hostPort": {
@@ -13877,7 +13999,7 @@
                       "properties": {
                         "type": {
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/41/definitions/sasType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/42/definitions/sasType",
                           "default": "SAS"
                         },
                         "username": {
@@ -14012,13 +14134,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/42/definitions/teradataType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/43/definitions/teradataType",
                           "default": "Teradata"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/42/definitions/teradataScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/43/definitions/teradataScheme",
                           "default": "teradatasql"
                         },
                         "username": {
@@ -14146,7 +14268,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/43/definitions/sapErpType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/44/definitions/sapErpType",
                           "default": "SapErp"
                         },
                         "hostPort": {
@@ -14243,13 +14365,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/44/definitions/synapseType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/45/definitions/synapseType",
                           "default": "Synapse"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/44/definitions/synapseScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/45/definitions/synapseScheme",
                           "default": "mssql+pyodbc"
                         },
                         "username": {
@@ -14425,13 +14547,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/45/definitions/exasolType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/46/definitions/exasolType",
                           "default": "Exasol"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/45/definitions/exasolScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/46/definitions/exasolScheme",
                           "default": "exa+websocket"
                         },
                         "username": {
@@ -14531,13 +14653,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/46/definitions/cockroachType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/47/definitions/cockroachType",
                           "default": "Cockroach"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/46/definitions/cockroachScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/47/definitions/cockroachScheme",
                           "default": "cockroachdb+psycopg2"
                         },
                         "username": {
@@ -14642,7 +14764,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/47/definitions/SSASType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/48/definitions/SSASType",
                           "default": "SSAS"
                         },
                         "httpConnection": {
@@ -14697,7 +14819,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/48/definitions/epicType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/49/definitions/epicType",
                           "default": "Epic"
                         },
                         "fhirServerUrl": {
@@ -14761,7 +14883,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/49/definitions/serviceNowType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/50/definitions/serviceNowType",
                           "default": "ServiceNow"
                         },
                         "hostPort": {
@@ -14842,7 +14964,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/50/definitions/dremioType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/51/definitions/dremioType",
                           "default": "Dremio"
                         },
                         "authType": {
@@ -14986,13 +15108,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/51/definitions/microsoftFabricType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/52/definitions/microsoftFabricType",
                           "default": "MicrosoftFabric"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/51/definitions/microsoftFabricScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/52/definitions/microsoftFabricScheme",
                           "default": "mssql+pyodbc"
                         },
                         "hostPort": {
@@ -15115,7 +15237,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/52/definitions/burstIQType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/53/definitions/burstIQType",
                           "default": "BurstIQ"
                         },
                         "username": {
@@ -15204,13 +15326,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/53/definitions/informixType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/54/definitions/informixType",
                           "default": "Informix"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/53/definitions/informixScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/54/definitions/informixScheme",
                           "default": "informix"
                         },
                         "username": {
@@ -15357,7 +15479,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/54/definitions/iometeType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/55/definitions/iometeType",
                           "default": "Iomete"
                         },
                         "hostPort": {
@@ -15462,13 +15584,13 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/55/definitions/questDBType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/56/definitions/questDBType",
                           "default": "QuestDB"
                         },
                         "scheme": {
                           "title": "Connection Scheme",
                           "description": "SQLAlchemy driver scheme options.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/55/definitions/questDBScheme",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/56/definitions/questDBScheme",
                           "default": "postgresql+psycopg2"
                         },
                         "username": {
@@ -15539,7 +15661,7 @@
                         "type": {
                           "title": "Service Type",
                           "description": "Service Type",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/56/definitions/sapBw4HanaType",
+                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/2/properties/config/oneOf/57/definitions/sapBw4HanaType",
                           "default": "SapBw4Hana"
                         },
                         "hostPort": {

@@ -1,0 +1,123 @@
+{
+  "$id": "https://open-metadata.org/schema/entity/services/connections/database/ducklakeConnection.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DucklakeConnection",
+  "description": "DuckLake is an open Lakehouse format that is built on SQL and Parquet",
+  "type": "object",
+  "javaType": "org.openmetadata.schema.services.connections.database.DucklakeConnection",
+  "definitions": {
+    "ducklakeType": {
+      "description": "Service type.",
+      "type": "string",
+      "enum": [
+        "Ducklake"
+      ],
+      "default": "Ducklake"
+    },
+    "ducklakeScheme": {
+      "description": "SQLAlchemy driver scheme options.",
+      "type": "string",
+      "enum": [
+        "duckdb"
+      ],
+      "default": "duckdb"
+    }
+  },
+  "properties": {
+    "type": {
+      "title": "Service Type",
+      "description": "Service Type",
+      "$ref": "#/definitions/ducklakeType",
+      "default": "Ducklake"
+    },
+    "scheme": {
+      "title": "Connection Scheme",
+      "description": "SQLAlchemy driver scheme options.",
+      "$ref": "#/definitions/ducklakeScheme",
+      "default": "duckdb"
+    },
+    "metadataPath": {
+      "title": "Metadata Path",
+      "description": "DuckLake metadata catalog path or connection string. Examples: metadata.ducklake, postgres:dbname=postgres, or a DuckDB secret name.",
+      "type": "string"
+    },
+    "dataPath": {
+      "title": "Data Path",
+      "description": "Optional DuckLake data storage location. Examples: s3://bucket/path/ or /path/to/files/.",
+      "type": "string"
+    },
+    "catalogName": {
+      "title": "Catalog Name",
+      "description": "Catalog name used to attach DuckLake in DuckDB.",
+      "type": "string",
+      "default": "ducklake"
+    },
+    "databaseName": {
+      "title": "Database Name",
+      "description": "Optional name to give to the database in OpenMetadata. If left blank, the attached catalog name is used.",
+      "type": "string"
+    },
+    "databaseSchema": {
+      "title": "Database Schema",
+      "description": "Database Schema of the data source. This is optional parameter, if you would like to restrict the metadata reading to a single schema.",
+      "type": "string"
+    },
+    "readOnly": {
+      "title": "Read Only",
+      "description": "Attach DuckLake in read-only mode.",
+      "type": "boolean",
+      "default": true
+    },
+    "createIfNotExists": {
+      "title": "Create If Not Exists",
+      "description": "Create a new DuckLake if the configured metadata catalog does not exist.",
+      "type": "boolean",
+      "default": false
+    },
+    "overrideDataPath": {
+      "title": "Override Data Path",
+      "description": "Override the data path stored in DuckLake metadata for this connection.",
+      "type": "boolean",
+      "default": false
+    },
+    "awsConfig": {
+      "title": "AWS Credentials Configuration",
+      "description": "Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such as s3://, r2://, gcs://, or gs://.",
+      "$ref": "../../../../security/credentials/awsCredentials.json"
+    },
+    "connectionOptions": {
+      "title": "Connection Options",
+      "$ref": "../connectionBasicType.json#/definitions/connectionOptions"
+    },
+    "connectionArguments": {
+      "title": "Connection Arguments",
+      "$ref": "../connectionBasicType.json#/definitions/connectionArguments"
+    },
+    "schemaFilterPattern": {
+      "title": "Default Schema Filter Pattern",
+      "description": "Regex to only include/exclude schemas that matches the pattern.",
+      "$ref": "../../../../type/filterPattern.json#/definitions/filterPattern"
+    },
+    "tableFilterPattern": {
+      "title": "Default Table Filter Pattern",
+      "description": "Regex to only include/exclude tables that matches the pattern.",
+      "$ref": "../../../../type/filterPattern.json#/definitions/filterPattern"
+    },
+    "databaseFilterPattern": {
+      "title": "Default Database Filter Pattern",
+      "description": "Regex to only include/exclude databases that matches the pattern.",
+      "$ref": "../../../../type/filterPattern.json#/definitions/filterPattern"
+    },
+    "supportsMetadataExtraction": {
+      "title": "Supports Metadata Extraction",
+      "$ref": "../connectionBasicType.json#/definitions/supportsMetadataExtraction"
+    },
+    "supportsDBTExtraction": {
+      "$ref": "../connectionBasicType.json#/definitions/supportsDBTExtraction"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "metadataPath"
+  ]
+}

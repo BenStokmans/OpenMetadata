@@ -278,6 +278,8 @@ export interface ServiceConnection {
  *
  * Doris Database Connection Config
  *
+ * DuckLake is an open Lakehouse format that is built on SQL and Parquet
+ *
  * StarRocks Database Connection Config
  *
  * UnityCatalog Connection Config
@@ -1133,7 +1135,11 @@ export interface Connection {
      * AWS Account ID
      */
     awsAccountId?: string;
-    awsConfig?:    AWSCredentials;
+    /**
+     * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+     * as s3://, r2://, gcs://, or gs://.
+     */
+    awsConfig?: AWSCredentials;
     /**
      * The authentication method that the user uses to sign in.
      */
@@ -1335,6 +1341,9 @@ export interface Connection {
      * (your AWS account ID) is used. This only names the database in OpenMetadata, it does not
      * select which Glue database to ingest.
      *
+     * Optional name to give to the database in OpenMetadata. If left blank, the attached
+     * catalog name is used.
+     *
      * Optional name to give to the database in OpenMetadata. If left blank, we will use 'epic'
      * as the database name.
      */
@@ -1427,6 +1436,9 @@ export interface Connection {
      * databaseSchema of the data source. This is optional parameter, if you would like to
      * restrict the metadata reading to a single databaseSchema. When left blank, OpenMetadata
      * Ingestion attempts to scan all the databaseSchema.
+     *
+     * Database Schema of the data source. This is optional parameter, if you would like to
+     * restrict the metadata reading to a single schema.
      *
      * Optional name to give to the schema in OpenMetadata. If left blank, we will use default
      * as the schema name
@@ -1795,6 +1807,31 @@ export interface Connection {
      * Hostname of the Couchbase service.
      */
     hostport?: string;
+    /**
+     * Catalog name used to attach DuckLake in DuckDB.
+     */
+    catalogName?: string;
+    /**
+     * Create a new DuckLake if the configured metadata catalog does not exist.
+     */
+    createIfNotExists?: boolean;
+    /**
+     * Optional DuckLake data storage location. Examples: s3://bucket/path/ or /path/to/files/.
+     */
+    dataPath?: string;
+    /**
+     * DuckLake metadata catalog path or connection string. Examples: metadata.ducklake,
+     * postgres:dbname=postgres, or a DuckDB secret name.
+     */
+    metadataPath?: string;
+    /**
+     * Override the data path stored in DuckLake metadata for this connection.
+     */
+    overrideDataPath?: boolean;
+    /**
+     * Attach DuckLake in read-only mode.
+     */
+    readOnly?: boolean;
     /**
      * Enable dataflow for ingestion
      */
@@ -2757,6 +2794,9 @@ export enum AuthProvider {
  *
  * AWS credentials configs.
  *
+ * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+ * as s3://, r2://, gcs://, or gs://.
+ *
  * AWS credentials for generating MWAA CLI token.
  *
  * AWS credentials configuration.
@@ -2995,6 +3035,9 @@ export enum AuthType {
  * AWS credentials required to access the S3 file.
  *
  * AWS credentials configs.
+ *
+ * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+ * as s3://, r2://, gcs://, or gs://.
  *
  * AWS credentials for generating MWAA CLI token.
  *
@@ -3663,6 +3706,9 @@ export interface ConfigSourceConnection {
  *
  * AWS credentials configs.
  *
+ * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+ * as s3://, r2://, gcs://, or gs://.
+ *
  * AWS credentials for generating MWAA CLI token.
  *
  * AWS credentials configuration.
@@ -4144,6 +4190,9 @@ export interface DataStorageConfig {
  * AWS credentials required to access the S3 file.
  *
  * AWS credentials configs.
+ *
+ * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
+ * as s3://, r2://, gcs://, or gs://.
  *
  * AWS credentials for generating MWAA CLI token.
  *
@@ -4931,6 +4980,7 @@ export enum AirflowConnectionScheme {
     Druid = "druid",
     DruidHTTP = "druid+http",
     DruidHTTPS = "druid+https",
+    Duckdb = "duckdb",
     ExaWebsocket = "exa+websocket",
     Hana = "hana",
     Hive = "hive",
@@ -5321,6 +5371,7 @@ export enum AirflowConnectionType {
     Doris = "Doris",
     Dremio = "Dremio",
     Druid = "Druid",
+    Ducklake = "Ducklake",
     DynamoDB = "DynamoDB",
     ElasticSearch = "ElasticSearch",
     Epic = "Epic",

@@ -67,6 +67,10 @@ const databaseSchemaLoaders: Partial<
     import(
       '../jsons/connectionSchemas/connections/database/dorisConnection.json'
     ),
+  [DatabaseServiceType.Ducklake]: () =>
+    import(
+      '../jsons/connectionSchemas/connections/database/ducklakeConnection.json'
+    ),
   [DatabaseServiceType.StarRocks]: () =>
     import(
       '../jsons/connectionSchemas/connections/database/starrocksConnection.json'

@@ -23,6 +23,7 @@ import databrick from '../assets/img/service-icon-databrick.webp';
 import datalake from '../assets/img/service-icon-datalake.webp';
 import deltalake from '../assets/img/service-icon-delta-lake.webp';
 import doris from '../assets/img/service-icon-doris.webp';
+import ducklake from '../assets/img/service-icon-ducklake.svg';
 import druid from '../assets/img/service-icon-druid.webp';
 import dynamodb from '../assets/img/service-icon-dynamodb.webp';
 import exasol from '../assets/img/service-icon-exasol.webp';
@@ -162,6 +163,7 @@ const SERVICE_ICON_LOADERS: Record<string, string> = {
   unitycatalog: unitycatalog,
   db2: ibmdb2,
   doris: doris,
+  ducklake: ducklake,
   starrocks: starrocks,
   druid: druid,
   dynamodb: dynamodb,
