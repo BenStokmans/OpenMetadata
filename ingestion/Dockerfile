@@ -129,7 +129,7 @@ ARG INGESTION_DEPENDENCY="all"
 ENV PIP_NO_CACHE_DIR=1
 # Make pip silent
 ENV PIP_QUIET=1
-ARG RI_VERSION="2.0.0.0.dev0"
+ARG RI_VERSION="2.0.0.0"
 RUN pip install --upgrade "pip>=26.2,<27" "setuptools>=83"
 RUN pip install /opt/openmetadata/openmetadata-airflow-apis --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.3.1/constraints-3.12.txt"
 RUN pip install "/opt/openmetadata/ingestion[${INGESTION_DEPENDENCY}]"
