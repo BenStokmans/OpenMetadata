@@ -11,7 +11,7 @@
 
 # Build stage
 FROM alpine:3 AS build
-ARG RI_VERSION="2.0.0-SNAPSHOT"
+ARG RI_VERSION="2.0.1"
 ARG RELEASE_REPOSITORY="BenStokmans/OpenMetadata"
 ENV RELEASE_URL="https://github.com/${RELEASE_REPOSITORY}/releases/download/${RI_VERSION}-release/openmetadata-${RI_VERSION}.tar.gz"
 
@@ -22,7 +22,7 @@ RUN mkdir -p /opt/openmetadata && \
 
 # Final stage
 FROM alpine:3
-ARG RI_VERSION="2.0.0-SNAPSHOT"
+ARG RI_VERSION="2.0.1"
 ARG BUILD_DATE
 ARG COMMIT_ID
 LABEL maintainer="OpenMetadata"
