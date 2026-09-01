@@ -111,6 +111,8 @@ COPY --chown=airflow:0 ingestion/examples/airflow/dags /opt/airflow/dags
 # Install the fork's generated ingestion framework and Airflow API plugin directly
 # from this checkout so connector changes do not depend on publishing to PyPI.
 COPY --chown=airflow:0 ingestion /opt/openmetadata/ingestion
+COPY --chown=airflow:0 openmetadata-spec /opt/openmetadata/openmetadata-spec
+COPY --chown=airflow:0 scripts/datamodel_generation.py /opt/openmetadata/scripts/datamodel_generation.py
 COPY --chown=airflow:0 openmetadata-airflow-apis /opt/openmetadata/openmetadata-airflow-apis
 
 # Refresh the interpreter-level pip before dropping privileges. The per-user
@@ -134,6 +136,23 @@ ENV PIP_NO_CACHE_DIR=1
 ENV PIP_QUIET=1
 ARG RI_VERSION="2.0.0.0.dev0"
 RUN pip install --upgrade "pip>=26.2,<27" "setuptools>=83"
+
+# Generated Python models and ANTLR parsers are intentionally ignored by git.
+# Build them inside the image before packaging the local ingestion checkout.
+RUN pip install "datamodel-code-generator==0.64.0"
+WORKDIR /opt/openmetadata/ingestion
+RUN mkdir -p /opt/openmetadata/ingestion/src/metadata/generated \
+  && python /opt/openmetadata/scripts/datamodel_generation.py
+RUN wget -q https://repo1.maven.org/maven2/org/antlr/antlr4/4.9.2/antlr4-4.9.2-complete.jar -O /tmp/antlr.jar \
+  && echo "bb117b1476691dc2915a318efd36f8957c0ad93447fb1dac01107eb15fe137cd  /tmp/antlr.jar" | sha256sum -c - \
+  && mkdir -p /opt/openmetadata/ingestion/src/metadata/generated/antlr \
+  && java -jar /tmp/antlr.jar -Dlanguage=Python3 -Xexact-output-dir \
+    -o /opt/openmetadata/ingestion/src/metadata/generated/antlr \
+    /opt/openmetadata/openmetadata-spec/src/main/antlr4/org/openmetadata/schema/*.g4 \
+  && touch /opt/openmetadata/ingestion/src/metadata/generated/antlr/__init__.py \
+  && rm -f /tmp/antlr.jar
+
+WORKDIR /opt/airflow
 RUN pip install /opt/openmetadata/openmetadata-airflow-apis --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.3.1/constraints-3.12.txt"
 RUN pip install "/opt/openmetadata/ingestion[${INGESTION_DEPENDENCY}]"
 
@@ -158,6 +177,10 @@ RUN pip freeze | grep "apache-airflow-providers" | grep --invert-match -E "docke
 # while authenticating connection with the airflow, psycopg2 solves this error
 RUN pip uninstall psycopg2-binary -y
 RUN pip install psycopg2 mysqlclient==2.1.1
+
+# Keep the image build from succeeding when the local package, generated models,
+# or the Kubernetes automation entrypoint are not importable by the Airflow user.
+RUN python -c "import run_automation; from metadata.generated.schema.entity.automations.workflow import Workflow"
 
 
 # Strip spaCy's bundled test fixture, which scanners misreport as an installed black.

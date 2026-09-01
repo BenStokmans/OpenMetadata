@@ -185,6 +185,17 @@ const expectAwsCredentialLayout = (
 };
 
 describe('ConnectionConfigForm schema rendering', () => {
+  it('keeps the DuckLake S3 region optional', async () => {
+    const { schema } = await loadConnectionSchema(
+      ServiceCategory.DATABASE_SERVICES,
+      'DuckLake'
+    );
+    const awsConfig = schema.properties?.awsConfig as RJSFSchema;
+
+    expect(awsConfig).toBeDefined();
+    expect(awsConfig.required ?? []).not.toContain('awsRegion');
+  });
+
   it.each(['Cassandra', 'Cockroach', 'Databricks', 'Glue', 'Greenplum'])(
     'renders %s without leaving the connection form empty',
     async (connectorType) => {

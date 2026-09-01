@@ -13650,9 +13650,68 @@
                           "default": false
                         },
                         "awsConfig": {
-                          "title": "AWS Credentials Configuration",
-                          "description": "Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such as s3://, r2://, gcs://, or gs://.",
-                          "$ref": "#/definitions/source/properties/sourceConfig/properties/config/oneOf/14/definitions/serviceConnections/properties/serviceConnection/oneOf/8/properties/config/oneOf/1/properties/authType/oneOf/1"
+                          "title": "S3 Credentials Configuration",
+                          "description": "Optional credentials used by DuckDB to read DuckLake catalogs or data paths in S3-compatible object storage. Leave empty for public HTTPS catalogs.",
+                          "$schema": "http://json-schema.org/draft-07/schema#",
+                          "type": "object",
+                          "javaType": "org.openmetadata.schema.services.connections.database.DucklakeS3Credentials",
+                          "properties": {
+                            "enabled": {
+                              "title": "Enable IAM Auth",
+                              "description": "Use the default AWS credential provider chain.",
+                              "type": "boolean",
+                              "default": false
+                            },
+                            "awsAccessKeyId": {
+                              "title": "AWS Access Key ID",
+                              "description": "AWS or S3-compatible access key ID.",
+                              "type": "string"
+                            },
+                            "awsSecretAccessKey": {
+                              "title": "AWS Secret Access Key",
+                              "description": "AWS or S3-compatible secret access key.",
+                              "type": "string",
+                              "format": "password"
+                            },
+                            "awsRegion": {
+                              "title": "AWS Region",
+                              "description": "Optional region for AWS or S3-compatible object storage.",
+                              "type": "string"
+                            },
+                            "awsSessionToken": {
+                              "title": "AWS Session Token",
+                              "description": "Optional session token for temporary AWS credentials.",
+                              "type": "string"
+                            },
+                            "endPointURL": {
+                              "title": "Endpoint URL",
+                              "description": "Optional endpoint URL for S3-compatible object storage.",
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "profileName": {
+                              "title": "Profile Name",
+                              "description": "Optional AWS profile used by the credential provider chain.",
+                              "type": "string"
+                            },
+                            "assumeRoleArn": {
+                              "title": "Role Arn for Assume Role",
+                              "description": "Optional Amazon Resource Name of a role to assume.",
+                              "type": "string"
+                            },
+                            "assumeRoleSessionName": {
+                              "title": "Role Session Name for Assume Role",
+                              "description": "Optional identifier for the assumed role session.",
+                              "type": "string",
+                              "default": "OpenMetadataSession"
+                            },
+                            "assumeRoleSourceIdentity": {
+                              "title": "Source Identity for Assume Role",
+                              "description": "Optional source identity for the assumed role session.",
+                              "type": "string"
+                            }
+                          },
+                          "additionalProperties": false
                         },
                         "connectionOptions": {
                           "title": "Connection Options",

@@ -12,10 +12,9 @@
 Entrypoint to run an automation workflow
 """
 
+import json
 import logging
 import os
-
-import yaml
 
 from metadata.automations.execute_runner import execute
 from metadata.generated.schema.entity.automations.workflow import (
@@ -25,36 +24,7 @@ from metadata.utils.logger import set_loggers_level
 
 
 def main():
-    """
-    We will receive in the config env var the Automations Workflow YAML,
-    for example, for a Test Connection Request:
-
-    ```json
-    id: d8afbfd4-f8da-4e0b-8b37-53a26a774d54
-    name: test-connection-mysql-01
-    description: mysql test connection workflow
-    fullyQualifiedName: test-connection-mysql-01
-    workflowType: TEST_CONNECTION
-    status: Successful
-    request:
-      connection:
-        config:
-          type: Mysql
-          scheme: mysql+pymysql
-          username: openmetadata_user
-          password: openmetadata_password
-          hostPort: 'mysql:3306'
-      serviceType: Database
-      connectionType: Mysql
-      serviceName: mysql_local_01
-      secretsManagerProvider: noop
-    openMetadataServerConnection:
-      clusterName: openmetadata
-      type: OpenMetadata
-      hostPort: 'http://openmetadata-server:8585/api'
-      authProvider: openmetadata
-    ```
-    """
+    """Load the automation workflow JSON provided by the server and execute it."""
 
     config = os.getenv("config")  # noqa: SIM112
     if not config:
@@ -63,7 +33,7 @@ def main():
     # Default test connection to INFO logs
     set_loggers_level(logging.INFO)
 
-    automation_workflow_dict = yaml.safe_load(config)
+    automation_workflow_dict = json.loads(config)
     automation_workflow = AutomationWorkflow.model_validate(automation_workflow_dict)
 
     execute(automation_workflow)
