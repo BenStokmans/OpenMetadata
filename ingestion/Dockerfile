@@ -134,7 +134,7 @@ ARG INGESTION_DEPENDENCY="all"
 ENV PIP_NO_CACHE_DIR=1
 # Make pip silent
 ENV PIP_QUIET=1
-ARG RI_VERSION="2.0.0.0.dev0"
+ARG RI_VERSION="2.0.2.0"
 RUN pip install --upgrade "pip>=26.2,<27" "setuptools>=83"
 
 # Generated Python models and ANTLR parsers are intentionally ignored by git.
