@@ -81,9 +81,9 @@
       "default": false
     },
     "awsConfig": {
-      "title": "AWS Credentials Configuration",
-      "description": "Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such as s3://, r2://, gcs://, or gs://.",
-      "$ref": "../../../../security/credentials/awsCredentials.json"
+      "title": "S3 Credentials Configuration",
+      "description": "Optional credentials used by DuckDB to read DuckLake catalogs or data paths in S3-compatible object storage. Leave empty for public HTTPS catalogs.",
+      "$ref": "./ducklakeS3Credentials.json"
     },
     "connectionOptions": {
       "title": "Connection Options",

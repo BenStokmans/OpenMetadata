@@ -101,6 +101,9 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 # Required for Starting Ingestion Container in Docker Compose
 COPY --chown=airflow:0 --chmod=775 ingestion/ingestion_dependency.sh /opt/airflow
+# Required for Kubernetes automation jobs created by OpenMetadata.
+# K8sPipelineClient runs `python run_automation.py` from /opt/airflow.
+COPY --chown=airflow:0 ingestion/operators/docker/run_automation.py /opt/airflow/run_automation.py
 # Required for Ingesting Sample Data
 COPY --chown=airflow:0 ingestion/examples/sample_data /home/airflow/ingestion/examples/sample_data
 # Required for Airflow DAGs of Sample Data

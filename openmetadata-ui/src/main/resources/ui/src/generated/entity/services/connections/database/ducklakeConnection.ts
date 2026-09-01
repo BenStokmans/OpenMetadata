@@ -15,10 +15,10 @@
  */
 export interface DucklakeConnection {
     /**
-     * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
-     * as s3://, r2://, gcs://, or gs://.
+     * Optional credentials used by DuckDB to read DuckLake catalogs or data paths in
+     * S3-compatible object storage. Leave empty for public HTTPS catalogs.
      */
-    awsConfig?: AWSCredentials;
+    awsConfig?: DucklakeS3Credentials;
     /**
      * Catalog name used to attach DuckLake in DuckDB.
      */
@@ -81,56 +81,51 @@ export interface DucklakeConnection {
 }
 
 /**
- * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
- * as s3://, r2://, gcs://, or gs://.
+ * Optional credentials used by DuckDB to read DuckLake catalogs or data paths in
+ * S3-compatible object storage. Leave empty for public HTTPS catalogs.
  *
- * AWS credentials configs.
+ * Optional credentials and connection settings for DuckLake catalogs or data stored in
+ * S3-compatible object storage.
  */
-export interface AWSCredentials {
+export interface DucklakeS3Credentials {
     /**
-     * The Amazon Resource Name (ARN) of the role to assume. Required Field in case of Assume
-     * Role
+     * Optional Amazon Resource Name of a role to assume.
      */
     assumeRoleArn?: string;
     /**
-     * An identifier for the assumed role session. Use the role session name to uniquely
-     * identify a session when the same role is assumed by different principals or for different
-     * reasons. Required Field in case of Assume Role
+     * Optional identifier for the assumed role session.
      */
     assumeRoleSessionName?: string;
     /**
-     * The Amazon Resource Name (ARN) of the role to assume. Optional Field in case of Assume
-     * Role
+     * Optional source identity for the assumed role session.
      */
     assumeRoleSourceIdentity?: string;
     /**
-     * AWS Access key ID.
+     * AWS or S3-compatible access key ID.
      */
     awsAccessKeyId?: string;
     /**
-     * AWS Region
+     * Optional region for AWS or S3-compatible object storage.
      */
-    awsRegion: string;
+    awsRegion?: string;
     /**
-     * AWS Secret Access Key.
+     * AWS or S3-compatible secret access key.
      */
     awsSecretAccessKey?: string;
     /**
-     * AWS Session Token.
+     * Optional session token for temporary AWS credentials.
      */
     awsSessionToken?: string;
     /**
-     * Enable AWS IAM authentication. When enabled, uses the default credential provider chain
-     * (environment variables, instance profile, etc.). Defaults to false for backward
-     * compatibility.
+     * Use the default AWS credential provider chain.
      */
     enabled?: boolean;
     /**
-     * EndPoint URL for the AWS
+     * Optional endpoint URL for S3-compatible object storage.
      */
     endPointURL?: string;
     /**
-     * The name of a profile to use with the boto session.
+     * Optional AWS profile used by the credential provider chain.
      */
     profileName?: string;
 }

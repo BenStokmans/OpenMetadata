@@ -55,6 +55,26 @@ def _has_s3_path(connection: DucklakeConnectionConfig) -> bool:
     return any(path and path.lower().startswith(("s3://", "r2://", "gcs://", "gs://")) for path in paths)
 
 
+def _has_aws_config(connection: DucklakeConnectionConfig) -> bool:
+    aws_config = connection.awsConfig
+    return bool(
+        aws_config
+        and any(
+            (
+                aws_config.enabled,
+                aws_config.awsAccessKeyId,
+                aws_config.awsSecretAccessKey,
+                aws_config.awsRegion,
+                aws_config.awsSessionToken,
+                aws_config.endPointURL,
+                aws_config.profileName,
+                aws_config.assumeRoleArn,
+                aws_config.assumeRoleSourceIdentity,
+            )
+        )
+    )
+
+
 class DucklakeConnection(BaseConnection[DucklakeConnectionConfig, Engine]):
     def _get_client(self) -> Engine:
         engine = create_engine(
@@ -82,7 +102,7 @@ class DucklakeConnection(BaseConnection[DucklakeConnectionConfig, Engine]):
             "LOAD ducklake",
         ]
 
-        if self.service_connection.awsConfig or _has_s3_path(self.service_connection):
+        if _has_aws_config(self.service_connection) or _has_s3_path(self.service_connection):
             statements.append("LOAD httpfs")
 
         secret_statement = self._get_s3_secret_statement()
@@ -119,7 +139,7 @@ class DucklakeConnection(BaseConnection[DucklakeConnectionConfig, Engine]):
 
     def _get_s3_secret_statement(self) -> str | None:
         aws_config = self.service_connection.awsConfig
-        if not aws_config:
+        if not aws_config or not _has_aws_config(self.service_connection):
             return None
 
         options = ["TYPE s3"]

@@ -3082,9 +3082,6 @@ export interface DBTPrefixConfig {
  *
  * AWS credentials required to access the S3 file.
  *
- * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
- * as s3://, r2://, gcs://, or gs://.
- *
  * AWS credentials for generating MWAA CLI token.
  *
  * AWS credentials configuration.
@@ -4765,10 +4762,10 @@ export interface Connection {
      */
     awsAccountId?: string;
     /**
-     * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
-     * as s3://, r2://, gcs://, or gs://.
+     * Optional credentials used by DuckDB to read DuckLake catalogs or data paths in
+     * S3-compatible object storage. Leave empty for public HTTPS catalogs.
      */
-    awsConfig?: AWSCredentials;
+    awsConfig?: AirflowConnectionAwsConfig;
     /**
      * The authentication method that the user uses to sign in.
      */
@@ -6305,9 +6302,6 @@ export enum AuthMechanismEnum {
  *
  * AWS credentials required to access the S3 file.
  *
- * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
- * as s3://, r2://, gcs://, or gs://.
- *
  * AWS credentials for generating MWAA CLI token.
  *
  * AWS credentials configuration.
@@ -6409,7 +6403,7 @@ export interface AuthenticationType {
      * Azure Active Directory Tenant ID where your Service Principal is registered.
      */
     azureTenantId?: string;
-    awsConfig?:     AWSCredentials;
+    awsConfig?:     AwsCredentialsClass;
     azureConfig?:   AzureCredentials;
     /**
      * Use GCP IAM for database authentication instead of a password.
@@ -6547,14 +6541,11 @@ export enum AuthType {
  *
  * AWS credentials required to access the S3 file.
  *
- * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
- * as s3://, r2://, gcs://, or gs://.
- *
  * AWS credentials for generating MWAA CLI token.
  *
  * AWS credentials configuration.
  */
-export interface AWSCredentials {
+export interface AwsCredentialsClass {
     /**
      * The Amazon Resource Name (ARN) of the role to assume. Required Field in case of Assume
      * Role
@@ -6784,6 +6775,90 @@ export enum AuthenticationEnum {
 }
 
 /**
+ * AWS credentials configs.
+ *
+ * AWS credentials required to access the S3 file.
+ *
+ * AWS credentials for generating MWAA CLI token.
+ *
+ * AWS credentials configuration.
+ *
+ * Optional credentials used by DuckDB to read DuckLake catalogs or data paths in
+ * S3-compatible object storage. Leave empty for public HTTPS catalogs.
+ *
+ * Optional credentials and connection settings for DuckLake catalogs or data stored in
+ * S3-compatible object storage.
+ */
+export interface AirflowConnectionAwsConfig {
+    /**
+     * The Amazon Resource Name (ARN) of the role to assume. Required Field in case of Assume
+     * Role
+     *
+     * Optional Amazon Resource Name of a role to assume.
+     */
+    assumeRoleArn?: string;
+    /**
+     * An identifier for the assumed role session. Use the role session name to uniquely
+     * identify a session when the same role is assumed by different principals or for different
+     * reasons. Required Field in case of Assume Role
+     *
+     * Optional identifier for the assumed role session.
+     */
+    assumeRoleSessionName?: string;
+    /**
+     * The Amazon Resource Name (ARN) of the role to assume. Optional Field in case of Assume
+     * Role
+     *
+     * Optional source identity for the assumed role session.
+     */
+    assumeRoleSourceIdentity?: string;
+    /**
+     * AWS Access key ID.
+     *
+     * AWS or S3-compatible access key ID.
+     */
+    awsAccessKeyId?: string;
+    /**
+     * AWS Region
+     *
+     * Optional region for AWS or S3-compatible object storage.
+     */
+    awsRegion?: string;
+    /**
+     * AWS Secret Access Key.
+     *
+     * AWS or S3-compatible secret access key.
+     */
+    awsSecretAccessKey?: string;
+    /**
+     * AWS Session Token.
+     *
+     * Optional session token for temporary AWS credentials.
+     */
+    awsSessionToken?: string;
+    /**
+     * Enable AWS IAM authentication. When enabled, uses the default credential provider chain
+     * (environment variables, instance profile, etc.). Defaults to false for backward
+     * compatibility.
+     *
+     * Use the default AWS credential provider chain.
+     */
+    enabled?: boolean;
+    /**
+     * EndPoint URL for the AWS
+     *
+     * Optional endpoint URL for S3-compatible object storage.
+     */
+    endPointURL?: string;
+    /**
+     * The name of a profile to use with the boto session.
+     *
+     * Optional AWS profile used by the credential provider chain.
+     */
+    profileName?: string;
+}
+
+/**
  * Event broker configuration. Choose between Kafka and Kinesis.
  *
  * Kafka broker configuration for OpenLineage events.
@@ -6836,7 +6911,7 @@ export interface BrokerConfiguration {
     /**
      * AWS credentials configuration.
      */
-    awsConfig?: AWSCredentials;
+    awsConfig?: AwsCredentialsClass;
     /**
      * Kinesis Data Stream name.
      */
@@ -7043,7 +7118,7 @@ export interface ConfigSourceConnection {
      * Local path for the local file with metastore data. E.g., /tmp/metastore.db
      */
     metastoreFilePath?: string;
-    securityConfig?:    AWSCredentials;
+    securityConfig?:    AwsCredentialsClass;
 }
 
 /**
@@ -7240,7 +7315,7 @@ export interface AirflowConnectionConnection {
      * ingested.
      */
     localFilePath?: string;
-    awsConfig?:     AWSCredentials;
+    awsConfig?:     AwsCredentialsClass;
     /**
      * Bucket Names of the data source.
      */
@@ -7350,7 +7425,7 @@ export interface MWAAConfiguration {
     /**
      * AWS credentials for generating MWAA CLI token.
      */
-    awsConfig: AWSCredentials;
+    awsConfig: AwsCredentialsClass;
     /**
      * The name of your MWAA environment.
      */
@@ -7375,7 +7450,7 @@ export interface AuthTypeClass {
      * Database user password. Leave empty if using IAM database authentication.
      */
     password?:    string;
-    awsConfig?:   AWSCredentials;
+    awsConfig?:   AwsCredentialsClass;
     azureConfig?: AzureCredentials;
     /**
      * Use GCP IAM for database authentication instead of a password.
@@ -7441,9 +7516,6 @@ export interface DataStorageConfig {
  * AWS credentials configs.
  *
  * AWS credentials required to access the S3 file.
- *
- * Optional AWS or S3-compatible credentials used by DuckDB to read DuckLake data paths such
- * as s3://, r2://, gcs://, or gs://.
  *
  * AWS credentials for generating MWAA CLI token.
  *
@@ -8048,7 +8120,7 @@ export interface OpenAPISchemaConnection {
     /**
      * AWS credentials required to access the S3 file.
      */
-    awsCredentials?: AWSCredentials;
+    awsCredentials?: AwsCredentialsClass;
     /**
      * S3 URL of the OpenAPI schema file (JSON or YAML). Example:
      * https://bucket-name.s3.amazonaws.com/path/to/openapi_schema.json
@@ -8083,7 +8155,7 @@ export interface OracleConnectionType {
  * S3 Connection.
  */
 export interface S3Connection {
-    awsConfig: AWSCredentials;
+    awsConfig: AwsCredentialsClass;
     /**
      * Bucket Names of the data source.
      */

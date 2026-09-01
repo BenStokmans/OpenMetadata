@@ -19,7 +19,9 @@ import pytest
 from metadata.generated.schema.entity.services.connections.database.ducklakeConnection import (
     DucklakeConnection as DucklakeConnectionConfig,
 )
-from metadata.generated.schema.security.credentials.awsCredentials import AWSCredentials
+from metadata.generated.schema.entity.services.connections.database.ducklakeS3Credentials import (
+    DucklakeS3Credentials,
+)
 from metadata.ingestion.api.steps import InvalidSourceException
 from metadata.ingestion.source.database.ducklake.connection import DucklakeConnection
 from metadata.ingestion.source.database.ducklake.metadata import DucklakeSource
@@ -114,12 +116,30 @@ def test_setup_statements_include_ducklake_attach_and_active_catalog():
     assert statements[-1] == 'USE "lake"'
 
 
+def test_public_https_catalog_accepts_empty_aws_config_without_s3_setup():
+    connection = DucklakeConnection(
+        DucklakeConnectionConfig(
+            metadataPath="https://objects.example/catalog.ducklake",
+            awsConfig={},
+        )
+    )
+
+    statements = connection._get_setup_statements()
+
+    assert "LOAD httpfs" not in statements
+    assert not any(statement.startswith("CREATE OR REPLACE SECRET") for statement in statements)
+    assert (
+        "ATTACH 'ducklake:https://objects.example/catalog.ducklake' AS \"ducklake\" "
+        "(CREATE_IF_NOT_EXISTS false, READ_ONLY)"
+    ) in statements
+
+
 def test_s3_compatible_aws_config_maps_to_duckdb_secret():
     connection = DucklakeConnection(
         DucklakeConnectionConfig(
             metadataPath="metadata.ducklake",
             dataPath="s3://warehouse/ducklake/",
-            awsConfig=AWSCredentials(
+            awsConfig=DucklakeS3Credentials(
                 awsAccessKeyId="access-key",
                 awsSecretAccessKey="secret-key",
                 awsRegion="us-east-1",
