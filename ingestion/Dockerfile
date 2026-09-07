@@ -101,9 +101,9 @@ RUN if [ $(uname -m) = "x86_64" ]; then \
 
 # Required for Starting Ingestion Container in Docker Compose
 COPY --chown=airflow:0 --chmod=775 ingestion/ingestion_dependency.sh /opt/airflow
-# Required for Kubernetes automation jobs created by OpenMetadata.
-# K8sPipelineClient runs `python run_automation.py` from /opt/airflow.
-COPY --chown=airflow:0 ingestion/operators/docker/run_automation.py /opt/airflow/run_automation.py
+# Required for Kubernetes ingestion, automation, and exit-handler jobs created
+# by OpenMetadata. K8sPipelineClient runs these scripts from /opt/airflow.
+COPY --chown=airflow:0 ingestion/operators/docker/*.py /opt/airflow/
 # Required for Ingesting Sample Data
 COPY --chown=airflow:0 ingestion/examples/sample_data /home/airflow/ingestion/examples/sample_data
 # Required for Airflow DAGs of Sample Data
@@ -179,8 +179,8 @@ RUN pip uninstall psycopg2-binary -y
 RUN pip install psycopg2 mysqlclient==2.1.1
 
 # Keep the image build from succeeding when the local package, generated models,
-# or the Kubernetes automation entrypoint are not importable by the Airflow user.
-RUN python -c "import run_automation; from metadata.generated.schema.entity.automations.workflow import Workflow"
+# or any Kubernetes job entrypoint is not importable by the Airflow user.
+RUN python -c "import exit_handler, main, run_automation; from metadata.generated.schema.entity.automations.workflow import Workflow"
 
 
 # Strip spaCy's bundled test fixture, which scanners misreport as an installed black.
