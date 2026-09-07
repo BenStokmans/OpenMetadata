@@ -12,7 +12,7 @@
 Unit tests for the DuckLake connector.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
 
@@ -72,6 +72,32 @@ def test_create_raises_for_wrong_connection_type():
 
     with pytest.raises(InvalidSourceException):
         DucklakeSource.create(bad_config["source"], mock_metadata)
+
+
+def test_schema_discovery_uses_only_unqualified_active_catalog_names():
+    source = DucklakeSource.__new__(DucklakeSource)
+    source.service_connection = DucklakeConnectionConfig(
+        metadataPath="metadata.ducklake",
+        catalogName="sprouts",
+    )
+    inspector = MagicMock()
+    inspector.get_schema_names.return_value = [
+        "memory.main",
+        "sprouts.cris",
+        'sprouts."nl-orgs"',
+        "system.information_schema",
+    ]
+
+    preparer = inspector.bind.dialect.identifier_preparer
+    preparer.unformat_identifiers.side_effect = {
+        "memory.main": ["memory", "main"],
+        "sprouts.cris": ["sprouts", "cris"],
+        'sprouts."nl-orgs"': ["sprouts", "nl-orgs"],
+        "system.information_schema": ["system", "information_schema"],
+    }.get
+
+    with patch.object(DucklakeSource, "inspector", new_callable=PropertyMock, return_value=inspector):
+        assert list(source.get_raw_database_schema_names()) == ["cris", "nl-orgs"]
 
 
 @patch("metadata.ingestion.source.database.ducklake.connection.attach_query_tracker")

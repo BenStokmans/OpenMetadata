@@ -37,3 +37,25 @@ class DucklakeSource(CommonDbSourceService):
 
     def get_database_names(self) -> Iterable[str]:
         yield self.service_connection.databaseName or self.service_connection.catalogName or "ducklake"
+
+    def get_raw_database_schema_names(self) -> Iterable[str]:
+        """Return bare schema names from the attached DuckLake catalog only.
+
+        duckdb-engine returns every visible schema as a catalog-qualified SQL
+        identifier (for example ``sprouts.cris`` or ``sprouts."nl-orgs"``).
+        OpenMetadata expects only the schema component here.
+        """
+
+        if self.service_connection.databaseSchema:
+            yield self.service_connection.databaseSchema
+            return
+
+        catalog_name = self.service_connection.catalogName or "ducklake"
+        preparer = self.inspector.bind.dialect.identifier_preparer
+
+        for qualified_name in self.inspector.get_schema_names():
+            identifiers = preparer.unformat_identifiers(str(qualified_name))
+            if len(identifiers) == 1:
+                yield identifiers[0]
+            elif len(identifiers) == 2 and identifiers[0] == catalog_name:
+                yield identifiers[1]
