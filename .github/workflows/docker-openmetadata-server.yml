@@ -21,7 +21,7 @@ on:
         type: boolean
 
 permissions:
-  contents: write
+  contents: read
   packages: write
 
 jobs:
@@ -61,6 +61,9 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     name: Release app with workflow_dispatch event
     runs-on: ubuntu-latest
+    # `gh release upload` needs write, overriding the workflow-level read.
+    permissions:
+      contents: write
     needs: maven-build
     steps:
 
